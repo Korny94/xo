@@ -16,7 +16,7 @@ async function fetchToken() {
     const loginResponse = {
       method: "POST",
       body: JSON.stringify({
-        username: username,
+        identifier: username,
         password: password,
       }),
       headers: {
@@ -24,53 +24,22 @@ async function fetchToken() {
       },
     };
     const response = await fetch(
-      `https://backendtest.local/wp-json/jwt-auth/v1/token`,
+      `http://localhost:1337/api/auth/local`,
       loginResponse
     );
     const json = await response.json();
-    console.log(json);
-    localStorage.setItem("token", json.token);
-    localStorage.setItem("username", json.user_display_name);
-    localStorage.setItem("email", json.user_email);
-
     if (response.ok) {
       loginTitle.innerHTML = "Login successful! Redirecting...";
       loginTitle.style.color = "green";
-      loginUser();
-    } else {
-      loginTitle.innerHTML = json.message;
-      loginTitle.style.color = "red";
-    }
-  } catch (error) {
-    loginTitle.innerHTML = error;
-    console.error(error);
-  }
-}
-
-async function loginUser() {
-  try {
-    const token = localStorage.getItem("token");
-    console.log(token);
-    const loginResponse = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-
-    const response = await fetch(
-      `https://backendtest.local/wp-json/jwt-auth/v1/token/validate`,
-      loginResponse
-    );
-    const json = await response.json();
-    console.log(json);
-    if (response.ok) {
       window.location.href = "../html/feed.html";
     } else {
-      loginFailed.classList.add("text-danger");
-      loginFailed.innerText = "Login failed, please try again.";
+      loginTitle.innerText = json.error.message;
+      loginTitle.style.color = "red";
     }
+    console.log(json);
+    localStorage.setItem("token", json.jwt);
+    localStorage.setItem("username", json.user.username);
+    localStorage.setItem("email", json.user.email);
   } catch (error) {
     console.error(error);
   }

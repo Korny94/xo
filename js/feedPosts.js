@@ -6,7 +6,8 @@ import { getReactionCounts } from "../js/reactions.js";
 
 async function fetchPosts() {
   try {
-    const token = localStorage.getItem("token");
+    const token =
+      "959bf8d97133dad1d4f7b3f453880920edef724200a06968159e811221822be992c6ea63d88010186b44d9fb0ff93a8340937171089ab3f013e7730bb2e1186649fe35cf1cef93838f60b776c57245fc383fab6b7940e337c3ca9c1a5360865abb8922cb946fd3e107d2df336a4c02fc9cda44fd7dadf64a74f74c7c3cc77438";
     const postsResponse = {
       method: "GET",
       headers: {
@@ -15,10 +16,11 @@ async function fetchPosts() {
       },
     };
     const response = await fetch(
-      `https://backendtest.local/wp-json/wp/v2/posts?_embed=true`,
+      `http://localhost:1337/api/posts`,
       postsResponse
     );
-    const json = await response.json();
+    const jsonResponse = await response.json();
+    const json = jsonResponse.data;
     console.log(json);
     const loader = document.querySelector("#loader");
     loader.classList.remove("loader");

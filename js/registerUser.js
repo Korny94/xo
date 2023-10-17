@@ -2,57 +2,35 @@ const registerUsername = document.querySelector("#registerUsername");
 const registerEmail = document.querySelector("#registerEmail");
 const registerPassword = document.querySelector("#registerPassword");
 const registerBtn = document.querySelector("#registerBtn");
-const registerApi = "https://backendtest.local/wp-json/wp/v2/users";
 
 registerBtn.addEventListener("click", () => {
-  fetchAuthToken();
+  registerUser();
 });
 
-async function fetchAuthToken() {
-  try {
-    const fetchTokenResponse = {
-      method: "POST",
-      body: JSON.stringify({
-        username: "HaleysPappa",
-        password: "Rbkebest94!",
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const response = await fetch(
-      `https://backendtest.local/wp-json/jwt-auth/v1/token`,
-      fetchTokenResponse
-    );
-    const json = await response.json();
-    localStorage.setItem("token", json.token);
-    const name = registerUsername.value;
-    const email = registerEmail.value;
-    const password = registerPassword.value;
-    console.log(name, email, password);
-    const registerUserObject = {
-      username: name,
-      email: email,
-      password: password,
-    };
-    registerUser(registerApi, registerUserObject);
-  } catch (error) {
-    console.error(error);
-  }
-}
+async function registerUser() {
+  const name = registerUsername.value;
+  const email = registerEmail.value;
+  const password = registerPassword.value;
+  console.log(name, email, password);
 
-async function registerUser(registerApi, registerUserObject) {
   try {
-    const token = localStorage.getItem("token");
+    const token = `959bf8d97133dad1d4f7b3f453880920edef724200a06968159e811221822be992c6ea63d88010186b44d9fb0ff93a8340937171089ab3f013e7730bb2e1186649fe35cf1cef93838f60b776c57245fc383fab6b7940e337c3ca9c1a5360865abb8922cb946fd3e107d2df336a4c02fc9cda44fd7dadf64a74f74c7c3cc77438`;
     const registerResponse = {
       method: "POST",
-      body: JSON.stringify(registerUserObject),
+      body: JSON.stringify({
+        username: name,
+        email: email,
+        password: password,
+      }),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     };
-    const response = await fetch(registerApi, registerResponse);
+    const response = await fetch(
+      "http://localhost:1337/api/auth/local/register",
+      registerResponse
+    );
     console.log(response);
     const json = await response.json();
     console.log(json);
